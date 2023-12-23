@@ -61,22 +61,30 @@ def get_employee__by_id(id):
     query = f"SELECT * FROM cse_it_asset.employees WHERE employee_id = {id}"
     result = data_fetch(query)
     return result
-    
+
+
 @app.route('/assets', methods=['GET'])
-def get_assets():
-    query = '''SELECT it_assets.description, number_in_stock, inventory_date
+def get_asset():
+    query = '''SELECT it_assets.description, number_assigned, number_in_stock, inventory_date
                     FROM cse_it_asset.it_asset_inventory
                     INNER JOIN it_assets ON it_assets_asset_id = it_assets.asset_id'''
     result = data_fetch(query)
     return result
 
-@app.route('/employee_assets', methods=['GET'])
-def get_employee_assets():
+@app.route('/employee_assets_assigned', methods=['GET'])
+def get_employee_assetss_assigned():
     query = '''SELECT CONCAT(employees.first_name," ",employees.last_name) as employee_name,
             it_assets.description asset_assigned
             FROM employee_assets
             INNER JOIN employees ON employees.employee_id = employee_assets.employee_id
             INNER JOIN it_assets ON it_assets.asset_id = employee_assets.it_asset_id
+            '''
+    result = data_fetch(query)
+    return result
+
+@app.route('/employee_assets', methods=['GET'])
+def get_employee_assets():
+    query = '''SELECT * FROM cse_it_asset.employee_assets
             '''
     result = data_fetch(query)
     return result  
@@ -152,7 +160,57 @@ def delete_employee(id):
         ),
         200,
     )
-        
+
+@app.route("/employee_assets", methods=["POST"])
+def assign_asset():
+    try:
+        info = request.get_json()
+        employee_id = info.get("employee_id")
+        it_asset_id = info.get("it_asset_id")
+        condition_out = info.get("condition_out")
+        other_details = info.get("other_details")
+        cur = mysql.connection.cursor()
+        cur.execute(
+            """INSERT INTO cse_it_asset.employee_assets
+            (employee_id, it_asset_id, date_out, condition_out, other_details) 
+            VALUES (%s, %s, CURDATE(), %s, %s)""",
+            (employee_id, it_asset_id, condition_out, other_details)
+        )
+        mysql.connection.commit()
+        rows_affected = cur.rowcount
+        cur.close()
+
+        return make_response(
+            jsonify({"message": "Asset assigned successfully", "rows_affected": rows_affected}),
+            201
+        )
+
+    except Exception as e:
+        print("Error adding employee:", e)
+        return jsonify({"error": str(e)}), 500
+    
+@app.route("/employee_assets/<int:id>", methods=["PUT"])
+def update_employee_asset(id):
+    cur = mysql.connection.cursor()
+    info = request.get_json()
+    date_returned = info.get("date_returned")
+    condition_returned = info.get("condition_returned")
+    other_details = info.get("other_details")
+    cur.execute(
+        """ UPDATE employee_assets SET 
+        date_returned = CURDATE(), condition_returned = %s, other_details = %s 
+        WHERE employee_asset_id = %s """,
+        (condition_returned, other_details, id),
+    )
+    mysql.connection.commit()
+    rows_affected = cur.rowcount
+    cur.close()
+    return make_response(
+        jsonify(
+            {"message": "Employee updated successfully", "rows_affected": rows_affected}
+        ),
+        200,
+    )
 
 '''
 def data_fetch(query):

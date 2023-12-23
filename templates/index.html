@@ -32,6 +32,7 @@
       <thead>
         <tr>
           <th>Description</th>
+          <th>Number Assigned</th>
           <th>Number in Stock</th>
           <th>Inventory Date</th>
         </tr>
@@ -79,6 +80,7 @@
       assetTable.innerHTML = assets.map(asset => `
         <tr>
           <td>${asset.description}</td>
+          <td>${asset.number_assigned}</td>
           <td>${asset.number_in_stock}</td>
           <td>${asset.inventory_date}</td>
         </tr>

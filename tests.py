@@ -36,7 +36,11 @@ class TestEmployeeAPI(unittest.TestCase):
     def test_update_employee(self):
         employee_id = 1 
         data = {
-            "first_name": "UpdatedName",
+            "first_name": "John Philip",
+            "last_name": "Beltran",
+            "department": "Admin",
+            "cell_mobile": "098847749897",
+            "email_address": "jpbeltran@abc.com",
         }
         response = self.app.put(f'/employees/{employee_id}', json=data)
         self.assertEqual(response.status_code, 200)
