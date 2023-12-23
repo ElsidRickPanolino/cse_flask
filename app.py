@@ -25,17 +25,53 @@ app.config["MYSQL_CURSORCLASS"] = "DictCursor"
 
 mysql = MySQL(app)
 
+def generate_xml_response(data):
+    if not isinstance(data, list) or not all(isinstance(item, dict) for item in data):
+        raise ValueError("Invalid data format. Expected a list of dictionaries.")
 
-def data_fetch(query):      
+    xml_data = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    xml_data += '<data>\n'
+
+    for row in data:
+        xml_data += '  <item>\n'
+        for key, value in row.items():
+            xml_data += f'    <{key}>{value}</{key}>\n'
+        xml_data += '  </item>\n'
+
+    xml_data += '</data>'
+
+    response = make_response(xml_data)
+    response.headers['Content-Type'] = 'application/xml'
+    return response
+
+def fetch_data_as_dicts(cur):
+    columns = [col[0] for col in cur.description]
+    data = cur.fetchall()
+    return [dict(zip(columns, row)) for row in data]
+
+def data_fetch(query):
     try:
+        format_requested = request.args.get('format') 
         cur = mysql.connection.cursor()
         cur.execute(query)
-        results = cur.fetchall()
-        cur.close()
-        return jsonify(results)
+        
+        results = fetch_data_as_dicts(cur)
+        
+        if format_requested and format_requested.lower() == 'xml':
+            if results: 
+                return generate_xml_response(results)
+            else:
+                return jsonify([])
+        else:
+            if results:
+                return jsonify(results)
+            else:
+                return jsonify([])
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
+    finally:
+        cur.close()
 
 @app.route('/employees', methods=['GET'])
 def get_employees():
