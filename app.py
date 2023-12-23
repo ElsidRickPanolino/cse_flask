@@ -1,5 +1,6 @@
-from flask import Flask, make_response, jsonify, request, send_file, render_template
+from flask import Flask, Response, make_response, jsonify, request, send_file, render_template
 from flask_mysqldb import MySQL
+import dicttoxml
 
 app = Flask(__name__, template_folder='templates')
 
@@ -24,30 +25,11 @@ app.config["MYSQL_DB"] = "cse_it_asset"
 app.config["MYSQL_CURSORCLASS"] = "DictCursor"
 
 mysql = MySQL(app)
+print(mysql)
 
-def generate_xml_response(data):
-    if not isinstance(data, list) or not all(isinstance(item, dict) for item in data):
-        raise ValueError("Invalid data format. Expected a list of dictionaries.")
-
-    xml_data = '<?xml version="1.0" encoding="UTF-8"?>\n'
-    xml_data += '<data>\n'
-
-    for row in data:
-        xml_data += '  <item>\n'
-        for key, value in row.items():
-            xml_data += f'    <{key}>{value}</{key}>\n'
-        xml_data += '  </item>\n'
-
-    xml_data += '</data>'
-
-    response = make_response(xml_data)
-    response.headers['Content-Type'] = 'application/xml'
-    return response
-
-def fetch_data_as_dicts(cur):
-    columns = [col[0] for col in cur.description]
-    data = cur.fetchall()
-    return [dict(zip(columns, row)) for row in data]
+def generate_xml_response(results):
+    xml_data = dicttoxml.dicttoxml(results)
+    return Response(xml_data, mimetype='text/xml')
 
 def data_fetch(query):
     try:
@@ -55,30 +37,25 @@ def data_fetch(query):
         cur = mysql.connection.cursor()
         cur.execute(query)
         
-        results = fetch_data_as_dicts(cur)
+        results = cur.fetchall()
         
         if format_requested and format_requested.lower() == 'xml':
-            if results: 
-                return generate_xml_response(results)
-            else:
-                return jsonify([])
+            xml_data = generate_xml_response(results)
+            return xml_data
         else:
-            if results:
-                return jsonify(results)
-            else:
-                return jsonify([])
+            return jsonify(results)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     finally:
         cur.close()
-
+        
+        
 @app.route('/employees', methods=['GET'])
 def get_employees():
     query = "SELECT * FROM cse_it_asset.employees"
     result = data_fetch(query)
     return result
-
 @app.route('/employees/<int:id>', methods=['GET'])
 def get_employee__by_id(id):
     query = f"SELECT * FROM cse_it_asset.employees WHERE employee_id = {id}"
