@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Update Employee</title>
+  <!-- Include Bootstrap for styling (optional) -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+  <div class="container mt-5">
+    <h1>Update Employee</h1>
+    <form id="update-employee-form">
+      <!-- Fields for updating employee details -->
+      <div class="form-group">
+        <label for="first_name">First Name:</label>
+        <input type="text" class="form-control" id="first_name" name="first_name">
+      </div>
+      <div class="form-group">
+        <label for="last_name">Last Name:</label>
+        <input type="text" class="form-control" id="last_name" name="last_name">
+      </div>
+      <div class="form-group">
+        <label for="department">Department:</label>
+        <input type="text" class="form-control" id="department" name="department">
+      </div>
+      <div class="form-group">
+        <label for="extension">Extension:</label>
+        <input type="text" class="form-control" id="extension" name="extension">
+      </div>
+      <div class="form-group">
+        <label for="cell_mobile">Cell/Mobile:</label>
+        <input type="text" class="form-control" id="cell_mobile" name="cell_mobile">
+      </div>
+      <div class="form-group">
+        <label for="email_address">Email Address:</label>
+        <input type="email" class="form-control" id="email_address" name="email_address">
+      </div>
+      <div class="form-group">
+        <label for="other_details">Other Details:</label>
+        <textarea class="form-control" id="other_details" name="other_details"></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const employeeId = window.location.pathname.split('/').pop();
+    console.log(employeeId);
+    axios.get(`/employees/${employeeId}`)
+      .then(response => {
+        const employeeData = response.data;
+        console.log(employeeData);
+        document.getElementById('first_name').value = employeeData[0].first_name;
+        document.getElementById('last_name').value = employeeData[0].last_name;
+        document.getElementById('department').value = employeeData[0].department;
+        document.getElementById('extension').value = employeeData[0].extension;
+        document.getElementById('cell_mobile').value = employeeData[0].cell_mobile;
+        document.getElementById('email_address').value = employeeData[0].email_address;
+        document.getElementById('other_details').value = employeeData[0].other_details;
+
+
+
+      })
+      .catch(error => {
+        console.error('Error fetching employee data:', error);
+      });
+
+    document.getElementById('update-employee-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const formData = {
+        first_name: document.getElementById('first_name').value,
+        last_name: document.getElementById('last_name').value,
+        department: document.getElementById('department').value,
+        extension: document.getElementById('extension').value,
+        cell_mobile: document.getElementById('cell_mobile').value,
+        email_address: document.getElementById('email_address').value,
+        other_details: document.getElementById('other_details').value,
+      };
+
+      axios.put(`/employees/${employeeId}`, formData)
+        .then(response => {
+          alert('Employee updated successfully!');
+        })
+        .catch(error => {
+          alert('Error adding employee: ' + error.response.data.error);
+          console.error(error);
+        });
+    });
+  </script>  
+</body>
+</html>

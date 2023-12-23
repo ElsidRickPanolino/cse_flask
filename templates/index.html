@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Asset Management</title>
+  <!-- Include Bootstrap for styling (optional) -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+  <div class="container mt-5">
+    <h1>Employee List</h1>
+    <p><a href="add_employee">Add Employee</a></p>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Department</th>
+          <th>Extension</th>
+          <th>Cell/Mobile</th>
+          <th>Email Address</th>
+          <th>Other Details</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="employee-table"></tbody>
+    </table>
+
+    <h1>Asset List</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Number in Stock</th>
+          <th>Inventory Date</th>
+        </tr>
+      </thead>
+      <tbody id="asset-table"></tbody>
+    </table>
+
+    <h1>Employee Assets</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Employee Name</th>
+          <th>Asset Assigned</th>
+        </tr>
+      </thead>
+      <tbody id="employee-assets-table"></tbody>
+    </table>
+  </div>
+
+  <!-- Include Axios for making HTTP requests (you can use other libraries too) -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    function renderEmployeeTable(employees) {
+      const employeeTable = document.getElementById('employee-table');
+      employeeTable.innerHTML = employees.map(employee => `
+        <tr>
+          <td>${employee.first_name}</td>
+          <td>${employee.last_name}</td>
+          <td>${employee.department}</td>
+          <td>${employee.extension}</td>
+          <td>${employee.cell_mobile}</td>
+          <td>${employee.email_address}</td>
+          <td>${employee.other_details}</td>
+          <td style="display: flex; flex-direction: row;">
+              <button><a href="/edit_employee/${employee.employee_id}">Edit</a></button>
+              <button onclick="deleteEmployee(${employee.employee_id})">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+    
+
+    function renderAssetTable(assets) {
+      const assetTable = document.getElementById('asset-table');
+      assetTable.innerHTML = assets.map(asset => `
+        <tr>
+          <td>${asset.description}</td>
+          <td>${asset.number_in_stock}</td>
+          <td>${asset.inventory_date}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderEmployeeAssetsTable(employeeAssets) {
+      const employeeAssetsTable = document.getElementById('employee-assets-table');
+      employeeAssetsTable.innerHTML = employeeAssets.map(asset => `
+        <tr>
+          <td>${asset.employee_name}</td>
+          <td>${asset.asset_assigned}</td>
+        </tr>
+      `).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      axios.get('/employees')
+        .then(response => {
+          const employees = response.data;
+          renderEmployeeTable(employees);
+        })
+        .catch(error => console.error(error));
+
+      axios.get('/assets')
+        .then(response => {
+          const assets = response.data;
+          renderAssetTable(assets);
+        })
+        .catch(error => console.error(error));
+
+      axios.get('/employee_assets')
+        .then(response => {
+          const employeeAssets = response.data;
+          renderEmployeeAssetsTable(employeeAssets);
+        })
+        .catch(error => console.error(error));
+
+    });
+
+    function deleteEmployee(employeeId) {
+      axios.delete(`/employees/${employeeId}`)
+        .then(response => {
+          // Reload or update the employee list after successful deletion
+          axios.get('/employees')
+            .then(response => {
+              const employees = response.data;
+              renderEmployeeTable(employees);
+            })
+            .catch(error => console.error(error));
+          
+          alert('Employee deleted successfully!');
+        })
+        .catch(error => {
+          alert('Error deleting employee: ' + error.response.data.error);
+          console.error(error);
+        });
+    }
+  
+
+
+
+  </script>
+</body>
+</html>
+
+<style>
+button{
+  border: 1px solid #777777;
+  margin: 0 5px;
+  background-color: #EEEEEE;
+}
+</style>
