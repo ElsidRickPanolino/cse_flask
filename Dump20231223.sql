@@ -90,7 +90,7 @@ CREATE TABLE `employees` (
   `email_address` varchar(45) DEFAULT NULL,
   `other_details` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`employee_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -99,7 +99,7 @@ CREATE TABLE `employees` (
 
 LOCK TABLES `employees` WRITE;
 /*!40000 ALTER TABLE `employees` DISABLE KEYS */;
-INSERT INTO `employees` VALUES (1,'John Philip','Beltran','President office',NULL,'09774774774774','jpbeltran@abc.com','President'),(2,'Harry','Cabrera','Admin',NULL,'09886777758585','harrycabrera@abc.com','Admin'),(3,'Maverick','Serencio','Admin',NULL,'09875777577','mserencio@abc.com','Admin'),(4,'John Cletus','Blas','Admin',NULL,'0988588858','jcblas@abc.com','Admin'),(5,'Emmanuel','Juanich','Developers department','Devop','098847747883','emmanjuanich@abc.com','Devop'),(7,'Ken','Sendaydiego','Developer\'s department','Backend','0998839884','kensendaydiego@abc.com','Backend developer'),(8,'Mel','Paredes','Developer\'s department','Front end','0987567747775','melparedes@abc.com','Front end developer'),(9,'Vince','Espina','IT',NULL,'09875774774','vinceespina@abc.com','IT'),(10,'Elsid Rick','Panolino','Data Science',NULL,'098847747553','elsidpanolino@abc.com','Data Scientists'),(11,'David','Dacallos','IT',NULL,'097775666664','david@abc.com','It personel'),(12,'Ivan','Coonde','Backend',NULL,'097775666664','ivanconde@abc.com','Django developer'),(13,'Philip','Alili','Frontend',NULL,'097775666664','philip@abc.com','Front end developer'),(14,'Mark','Creador','Data Science',NULL,'09777536664','mark@abc.com',''),(15,'John Cletus','Blas','Admin',NULL,'0988588858','jcblas@abc.com','Admin'),(16,'Milky','galicia','Admin','','09885888522','milkygalicia@abc.com','Admin');
+INSERT INTO `employees` VALUES (1,'UpdatedName',NULL,NULL,NULL,NULL,NULL,NULL),(2,'Harry','Cabrera','Admin',NULL,'09886777758585','harrycabrera@abc.com','Admin'),(3,'Maverick','Serencio','Admin',NULL,'09875777577','mserencio@abc.com','Admin'),(4,'John Cletus','Blas','Admin',NULL,'0988588858','jcblas@abc.com','Admin'),(5,'Emmanuel','Juanich','Developers department','Devop','098847747883','emmanjuanich@abc.com','Devop'),(7,'Ken','Sendaydiego','Developer\'s department','Backend','0998839884','kensendaydiego@abc.com','Backend developer'),(8,'Mel','Paredes','Developer\'s department','Front end','0987567747775','melparedes@abc.com','Front end developer'),(9,'Vince','Espina','IT',NULL,'09875774774','vinceespina@abc.com','IT'),(11,'David','Dacallos','IT',NULL,'097775666664','david@abc.com','It personel'),(12,'Ivan','Coonde','Backend',NULL,'097775666664','ivanconde@abc.com','Django developer'),(13,'Philip','Alili','Frontend',NULL,'097775666664','philip@abc.com','Front end developer'),(14,'Mark','Creador','Data Science',NULL,'09777536664','mark@abc.com',''),(15,'John Cletus','Blas','Admin',NULL,'0988588858','jcblas@abc.com','Admin'),(16,'Milky','galicia','Admin','','09885888522','milkygalicia@abc.com','Admin'),(18,'John','Doe','IT',NULL,'1234567890','john@example.com','Some details'),(19,'John','Doe','IT',NULL,'1234567890','john@example.com','Some details'),(23,'Jessica','Cabilar','Data Science',NULL,'098774774784','jessicacabilar@abc.com',''),(24,'Ramil','Malate','back end',NULL,'098773474784','ramilmalate@abc.com','backend department head'),(25,'Lenor','Montiero','back end',NULL,'09234334784','lenormontiero@abc.com',''),(26,'Arnaldo','Olarte','Admin',NULL,'09234334344','arnaldoolarte@abc.com',''),(27,'Franz','Valonda','IT',NULL,'0923433374','franzvalonda@abc.com','');
 /*!40000 ALTER TABLE `employees` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -170,4 +170,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-23 19:31:32
+-- Dump completed on 2023-12-23 20:04:02
